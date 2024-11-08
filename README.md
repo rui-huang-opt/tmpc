@@ -70,5 +70,3 @@
 下图说明一个状态方程为 $x_{k+1}=Ax_{k}+w$的系统，其中w为有界噪声，则当它进入鲁棒不变集后就不会再出去
 
 ![img](results/tube_based_mpc/fig_4.gif)
-
-Just a test for renaming.
