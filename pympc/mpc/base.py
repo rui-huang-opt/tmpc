@@ -6,34 +6,14 @@ import numpy.linalg as npl
 import scipy.linalg as spl
 import typing
 from functools import cache
-from .. import set
-
-
-class MPCTypeException(Exception):
-    def __init__(self, name: str, tp: str):
-        message = 'The type of ' + name + ' must be ' + tp + '!'
-        super().__init__(message)
-
-
-class MPCDimensionException(Exception):
-    def __init__(self, *obj: str):
-        message = 'The dimensions of ' + ', '.join(obj) + ' do not match!'
-        super().__init__(message)
-
-
-class MPCTerminalSetTypeException(Exception):
-    def __init__(self):
-        super().__init__('The terminal set type must be \'zero\', \'ellipsoid\' or \'polyhedron\'')
-
-
-class MPCNotImplementedException(Exception):
-    def __init__(self, function: str):
-        message = 'The function ' + function + ' has not been implemented yet!'
-        super().__init__(message)
+from numpy import number
+from numpy.typing import NDArray
+from .exception import *
+from ..set import Polyhedron, Ellipsoid, unit_cube
 
 
 class LQR:
-    def __init__(self, a: np.ndarray, b: np.ndarray, q: np.ndarray, r: np.ndarray):
+    def __init__(self, a: NDArray[number], b: NDArray[number], q: NDArray[number], r: NDArray[number]):
         if not (a.ndim == b.ndim == q.ndim == r.ndim == 2):
             raise MPCTypeException('A, B, Q, R', '2D array')
         if not (a.shape[0] == a.shape[1] == b.shape[0] == q.shape[0] == q.shape[1]):
@@ -60,36 +40,36 @@ class LQR:
         return self.__input_dim
 
     @property
-    def a(self) -> np.ndarray:
+    def a(self) -> NDArray[number]:
         return self.__a
 
     @property
-    def b(self) -> np.ndarray:
+    def b(self) -> NDArray[number]:
         return self.__b
 
     @property
-    def q(self) -> np.ndarray:
+    def q(self) -> NDArray[number]:
         return self.__q
 
     @property
-    def r(self) -> np.ndarray:
+    def r(self) -> NDArray[number]:
         return self.__r
 
     @property
-    def p(self) -> np.ndarray:
+    def p(self) -> NDArray[number]:
         return self.__p
 
     @property
-    def k(self) -> np.ndarray:
+    def k(self) -> NDArray[number]:
         return self.__k
 
-    def cal_lqr(self) -> typing.Tuple[np.ndarray, np.ndarray]:
+    def cal_lqr(self) -> typing.Tuple[NDArray[number], NDArray[number]]:
         p = spl.solve_discrete_are(self.__a, self.__b, self.__q, self.__r)
         k = npl.inv(self.__r + self.__b.T @ p @ self.__b) @ self.__b.T @ p @ self.__a
 
         return p, k
 
-    def __call__(self, real_time_state: np.ndarray) -> np.ndarray:
+    def __call__(self, real_time_state: NDArray[number]) -> NDArray[number]:
         if real_time_state.ndim != 1:
             raise MPCTypeException('real time state', '1D array')
         if real_time_state.shape[0] != self.__state_dim:
@@ -99,7 +79,7 @@ class LQR:
 
 
 class MPCBase(LQR, metaclass=abc.ABCMeta):
-    def __init__(self, a: np.ndarray, b: np.ndarray, q: np.ndarray, r: np.ndarray, pred_horizon: int,
+    def __init__(self, a: NDArray[number], b: NDArray[number], q: NDArray[number], r: NDArray[number], pred_horizon: int,
                  terminal_set_type: str, solver: str):
         super().__init__(a, b, q, r)
 
@@ -131,20 +111,20 @@ class MPCBase(LQR, metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def state_set(self) -> set.Polyhedron:
+    def state_set(self) -> Polyhedron:
         ...
 
     @property
     @abc.abstractmethod
-    def input_set(self) -> set.Polyhedron:
+    def input_set(self) -> Polyhedron:
         ...
 
     @property
-    def state_prediction_series(self) -> np.ndarray:
+    def state_prediction_series(self) -> NDArray[number]:
         return self.__state_series.value.reshape(self.__pred_horizon + 1, self.state_dim).T
 
     @property
-    def input_prediction_series(self) -> np.ndarray:
+    def input_prediction_series(self) -> NDArray[number]:
         return self.__input_series.value.reshape(self.__pred_horizon, self.input_dim).T
 
     @property
@@ -160,7 +140,7 @@ class MPCBase(LQR, metaclass=abc.ABCMeta):
         return self.__real_time_state
 
     @real_time_state.setter
-    def real_time_state(self, value: np.ndarray) -> None:
+    def real_time_state(self, value: NDArray[number]) -> None:
         if value.ndim != 1:
             raise MPCTypeException('real time state', '1D array')
         if value.size != self.state_dim:
@@ -193,18 +173,18 @@ class MPCBase(LQR, metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractmethod
-    def __call__(self, real_time_state: np.ndarray) -> np.ndarray:
+    def __call__(self, real_time_state: NDArray[number]) -> NDArray[number]:
         ...
 
     @property
     @cache
-    def terminal_set(self) -> set.Polyhedron or set.Ellipsoid:
+    def terminal_set(self) -> Polyhedron or Ellipsoid:
         # 在终端约束 Xf 内的一点 x 满足：
         # 1. 当采用控制律 u = Kx 时，状态约束和输入约束均满足 -- 这一条件描述的集合为 X 与 U @ K 的交集，集合与矩阵的乘法解释请参考文件poly
         # 2. 下一时刻的状态 x+ = A_k @ x 仍属于 Xf -- 这一条件描述的集合 set 被包含于 set @ A_k
         # 若设置终端约束集合为原点，则生成一个边长为0的单位立方体，否则计算最大的满足上述条件的集合
         if self.__terminal_set_type == 'zero':
-            terminal_set = set.unit_cube(self.state_dim, 0)
+            terminal_set = unit_cube(self.state_dim, 0)
         elif self.__terminal_set_type == 'ellipsoid':
             state_set_in_terminal = self.state_set & (self.input_set @ self.k)
             terminal_set = state_set_in_terminal.get_max_ellipsoid(self.p / 2)
@@ -277,7 +257,7 @@ class MPCBase(LQR, metaclass=abc.ABCMeta):
 
     @property
     @cache
-    def feasible_set(self) -> set.Polyhedron:
+    def feasible_set(self) -> Polyhedron:
         # 这里先求出了M，C矩阵，于是知道了Xk = M*x + C*Uk，之后将约束条件转化为G*Xk <= h，再包含A_Uk*Uk <= b_Uk
         # 于是有
         # [G*M G*C ][x ]      [h   ]
@@ -319,7 +299,7 @@ class MPCBase(LQR, metaclass=abc.ABCMeta):
         l_mat = np.block([[g @ m, g @ c], [zero, a_uk]])
         r_vec = np.hstack((h, b_uk))
 
-        feasible_set = set.Polyhedron(l_mat, r_vec)
+        feasible_set = Polyhedron(l_mat, r_vec)
 
         # 傅里叶-莫茨金消元法，将控制输入变量U消去
         feasible_set.fourier_motzkin_elimination(self.input_dim * self.__pred_horizon)

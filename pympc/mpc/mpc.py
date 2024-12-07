@@ -1,9 +1,13 @@
-from .base import *
+import numpy as np
+import cvxpy as cp
+from .base import MPCBase
+from .exception import *
+from ..set import Polyhedron
 
 
 class MPC(MPCBase):
     def __init__(self, a: np.ndarray, b: np.ndarray, q: np.ndarray, r: np.ndarray, pred_horizon: int,
-                 state_set: set.Polyhedron, input_set: set.Polyhedron, terminal_set_type='polyhedron', solver=cp.OSQP):
+                 state_set: Polyhedron, input_set: Polyhedron, terminal_set_type='polyhedron', solver=cp.OSQP):
         super().__init__(a, b, q, r, pred_horizon, terminal_set_type, solver)
 
         if not (self.state_dim == state_set.n_dim):
@@ -15,11 +19,11 @@ class MPC(MPCBase):
         self.__input_set = input_set
 
     @property
-    def state_set(self) -> set.Polyhedron:
+    def state_set(self) -> Polyhedron:
         return self.__state_set
 
     @property
-    def input_set(self) -> set.Polyhedron:
+    def input_set(self) -> Polyhedron:
         return self.__input_set
 
     @property

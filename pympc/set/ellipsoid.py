@@ -1,5 +1,9 @@
+import numpy as np
 import numpy.linalg as npl
-from .base import *
+import cvxpy as cp
+import matplotlib.pyplot as plt
+from .base import SetBase
+from .exception import *
 
 
 class Ellipsoid(SetBase):
