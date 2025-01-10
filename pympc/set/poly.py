@@ -1,8 +1,8 @@
-import typing
 import numpy as np
 import numpy.linalg as npl
 import cvxpy as cp
 import matplotlib.pyplot as plt
+from typing import Union, List
 from .base import SetBase, support_fun
 from .exception import *
 from .ellipsoid import Ellipsoid
@@ -10,7 +10,7 @@ from .ellipsoid import Ellipsoid
 
 class InscribedEllipsoidException(Exception):
     def __init__(self):
-        super().__init__('Cannot find a maximum inscribed ellipsoid since the center is not in the polyhedron!')
+        super().__init__("Cannot find a maximum inscribed ellipsoid since the center is not in the polyhedron!")
 
 
 class Polyhedron(SetBase):
@@ -22,11 +22,11 @@ class Polyhedron(SetBase):
 
     def __init__(self, l_mat: np.ndarray, r_vec: np.ndarray):
         if l_mat.ndim != 2:
-            raise SetTypeException('left matrix', 'polyhedron', '2D array')
+            raise SetTypeException("left matrix", "polyhedron", "2D array")
         if r_vec.ndim != 1:
-            raise SetTypeException('right vector', 'polyhedron', '1D array')
+            raise SetTypeException("right vector", "polyhedron", "1D array")
         if l_mat.shape[0] != r_vec.shape[0]:
-            raise SetDimensionException('left matrix', 'right vector')
+            raise SetDimensionException("left matrix", "right vector")
 
         self.__n_edges, self.__n_dim = l_mat.shape
         self.__l_mat = l_mat
@@ -49,7 +49,7 @@ class Polyhedron(SetBase):
         return self.__r_vec
 
     # 浅拷贝
-    def __copy__(self, other: 'Polyhedron') -> None:
+    def __copy__(self, other: "Polyhedron") -> None:
         self.__n_edges = other.__n_edges
         self.__n_dim = other.__n_dim
         self.__l_mat = other.__l_mat
@@ -57,17 +57,19 @@ class Polyhedron(SetBase):
 
     # 打印该多面体的信息
     def __str__(self) -> str:
-        return ('====================================================================================================\n'
-                'left matrix @ x <= right vector\n'
-                '====================================================================================================\n'
-                f'left matrix:\n'
-                f'{self.__l_mat}\n'
-                '----------------------------------------------------------------------------------------------------\n'
-                f'right vector:\n'
-                f'{self.__r_vec}\n'
-                '====================================================================================================')
+        return (
+            "====================================================================================================\n"
+            "left matrix @ x <= right vector\n"
+            "====================================================================================================\n"
+            f"left matrix:\n"
+            f"{self.__l_mat}\n"
+            "----------------------------------------------------------------------------------------------------\n"
+            f"right vector:\n"
+            f"{self.__r_vec}\n"
+            "===================================================================================================="
+        )
 
-    def contains(self, point: np.ndarray or cp.Expression) -> bool or cp.Constraint:
+    def contains(self, point: Union[np.ndarray, cp.Expression]) -> Union[bool, cp.Constraint]:
         if isinstance(point, np.ndarray):
             res = np.all(self.__l_mat @ point - self.__r_vec <= 0)
         else:
@@ -76,8 +78,15 @@ class Polyhedron(SetBase):
         return res
 
     # 多边形绘图会有误差，因为采用等高线来画的，增加采样点的个数可以提高画图精度
-    def plot(self, ax: plt.Axes, x_lim: typing.List[int or float] = None, y_lim: typing.List[int or float] = None,
-             default_bound=100, n_points=2000, color='b') -> None:
+    def plot(
+        self,
+        ax: plt.Axes,
+        x_lim: List[Union[int, float]] = None,
+        y_lim: List[Union[int, float]] = None,
+        default_bound=100,
+        n_points=2000,
+        color="b",
+    ) -> None:
         if self.__n_dim != 2:
             raise SetPlotException()
         if x_lim is None:
@@ -93,22 +102,29 @@ class Polyhedron(SetBase):
         y = np.linspace(*y_lim, n_points)
         x_grid, y_grid = np.meshgrid(x, y)
 
-        z = np.sum(np.maximum(self.__l_mat[:, 0, np.newaxis, np.newaxis] * x_grid
-                              + self.__l_mat[:, 1, np.newaxis, np.newaxis] * y_grid
-                              - self.__r_vec[:, np.newaxis, np.newaxis], 0), axis=0)
+        z = np.sum(
+            np.maximum(
+                self.__l_mat[:, 0, np.newaxis, np.newaxis] * x_grid
+                + self.__l_mat[:, 1, np.newaxis, np.newaxis] * y_grid
+                - self.__r_vec[:, np.newaxis, np.newaxis],
+                0,
+            ),
+            axis=0,
+        )
 
         ax.contour(x_grid, y_grid, z, levels=0, colors=color)
 
     # 绘制一个多面体时需要知道大概范围
     @staticmethod
-    def get_grid_lim(val_min: int or float, val_max: int or float, default_bound: int or float) \
-            -> typing.List[int or float]:
-        if val_min == -float('inf') and val_max == float('inf'):
+    def get_grid_lim(
+        val_min: Union[int, float], val_max: Union[int, float], default_bound: Union[int, float]
+    ) -> List[Union[int, float]]:
+        if val_min == -float("inf") and val_max == float("inf"):
             lim = [-default_bound, default_bound]
-        elif val_min == -float('inf') and val_max != float('inf'):
+        elif val_min == -float("inf") and val_max != float("inf"):
             bound = abs(val_max) * 1.2
             lim = [-bound, bound]
-        elif val_min != -float('inf') and val_max == float('inf'):
+        elif val_min != -float("inf") and val_max == float("inf"):
             bound = abs(val_min) * 1.2
             lim = [-bound, bound]
         else:
@@ -117,7 +133,7 @@ class Polyhedron(SetBase):
 
         return lim
 
-    def subset_eq(self, other: 'Polyhedron') -> bool:
+    def subset_eq(self, other: "Polyhedron") -> bool:
         return all([support_fun(other.__l_mat[i, :], self) <= other.__r_vec[i] for i in range(other.__n_edges)])
 
     # 将不等式组右侧向量归一化，防止系数过大，影响支撑函数（线性规划）求解
@@ -127,7 +143,7 @@ class Polyhedron(SetBase):
         self.__r_vec = self.__r_vec / r_vec_abs
 
     # 去除某个边
-    def remove_edge(self, edge: int or list) -> 'Polyhedron':
+    def remove_edge(self, edge: Union[int, List]) -> "Polyhedron":
         l_mat = np.delete(self.__l_mat, edge, 0)
         r_vec = np.delete(self.__r_vec, edge, 0)
 
@@ -158,7 +174,7 @@ class Polyhedron(SetBase):
     #              减少的维度
     def fourier_motzkin_elimination(self, n_dim: int) -> None:
         if n_dim < 0:
-            raise SetTypeException('eliminated dimension', 'polyhedron', 'positive integer')
+            raise SetTypeException("eliminated dimension", "polyhedron", "positive integer")
         for _ in range(n_dim):
             pos_a = np.empty((0, self.__n_dim - 1))
             pos_b = np.empty(0)
@@ -201,7 +217,7 @@ class Polyhedron(SetBase):
     # [0 0 0 ... 0] ---
     def extend_dimensions(self, n_dim: int) -> None:
         if n_dim < 0:
-            raise SetTypeException('extended dimension', 'polyhedron', 'positive integer')
+            raise SetTypeException("extended dimension", "polyhedron", "positive integer")
         elif n_dim > 0:
             zero_1 = np.zeros((self.__n_edges, n_dim))
             zero_2 = np.zeros((n_dim, self.__n_dim))
@@ -213,7 +229,7 @@ class Polyhedron(SetBase):
             self.__r_vec = np.block([self.__r_vec, zero_3])
 
     # 闵可夫斯基和（或平移）
-    def __add__(self, other: 'Polyhedron' or np.ndarray) -> 'Polyhedron':
+    def __add__(self, other: Union["Polyhedron", np.ndarray]) -> "Polyhedron":
         if isinstance(other, Polyhedron):
             h_self_other = np.array([support_fun(self.__l_mat[i, :], other) for i in range(self.__n_edges)])
             h_other_self = np.array([support_fun(other.__l_mat[i, :], self) for i in range(other.__n_edges)])
@@ -226,9 +242,9 @@ class Polyhedron(SetBase):
 
         else:
             if other.ndim != 1:
-                raise SetCalculationException('polyhedron', 'added', '1D array')
+                raise SetCalculationException("polyhedron", "added", "1D array")
             if other.size != self.__n_dim:
-                raise SetCalculationException('polyhedron', 'added', 'array with matching dimension')
+                raise SetCalculationException("polyhedron", "added", "array with matching dimension")
 
             res = self.__class__(self.__l_mat, self.__r_vec + self.__l_mat @ other)
 
@@ -236,12 +252,12 @@ class Polyhedron(SetBase):
 
         return res
 
-    def __neg__(self) -> 'Polyhedron':
+    def __neg__(self) -> "Polyhedron":
         return self.__class__(-self.__l_mat, self.__r_vec)
 
     # 特别的，这里指庞特里亚金差，即闵可夫斯基和的逆运算
     # 即若 p2 = p1 + p3，则 p3 = p2 - p1，只有当输入为一个点（数组）时该运算等价于 (-p1) + p2
-    def __sub__(self, other: 'Polyhedron' or np.ndarray) -> 'Polyhedron':
+    def __sub__(self, other: Union["Polyhedron", np.ndarray]) -> "Polyhedron":
         if isinstance(other, Polyhedron):
             h_self_other = np.array([support_fun(self.__l_mat[i, :], other) for i in range(self.__n_edges)])
 
@@ -255,16 +271,16 @@ class Polyhedron(SetBase):
         return res
 
     # 多面体坐标变换，Poly_new = Poly @ mat 意味着 Poly 是将 Poly_new 中的所有点通过 mat 映射后的区域，这一定义是为了方便计算不变集
-    def __matmul__(self, other: np.ndarray) -> 'Polyhedron':
+    def __matmul__(self, other: np.ndarray) -> "Polyhedron":
         if other.ndim != 2:
-            raise SetCalculationException('polyhedron', 'multiplied', '2D array')
+            raise SetCalculationException("polyhedron", "multiplied", "2D array")
         if other.shape[0] != self.__n_dim:
-            raise SetCalculationException('polyhedron', 'multiplied', 'array with matching dimension')
+            raise SetCalculationException("polyhedron", "multiplied", "array with matching dimension")
 
         return self.__class__(self.__l_mat @ other, self.__r_vec)
 
     # 多面体坐标变换，Poly_new = Poly @ mat 意味着 Poly_new 是将 Poly 中的所有点通过 mat 映射后的区域，这一定义是为了方便计算不变集
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs) -> 'Polyhedron' or NotImplemented:
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs) -> "Polyhedron":
         if ufunc == np.matmul:
             lhs, rhs = inputs
             row, col = lhs.shape
@@ -284,19 +300,19 @@ class Polyhedron(SetBase):
 
         return res
 
-    def __mul__(self, other: int or float) -> 'Polyhedron':
+    def __mul__(self, other: Union[int, float]) -> "Polyhedron":
         if other < 0:
-            raise SetCalculationException('polyhedron', 'multiplied', 'positive number')
+            raise SetCalculationException("polyhedron", "multiplied", "positive number")
 
         return self.__class__(self.__l_mat / other, self.__r_vec)
 
-    def __and__(self, other: 'Polyhedron') -> 'Polyhedron':
+    def __and__(self, other: "Polyhedron") -> "Polyhedron":
         res = self.__class__(np.vstack((self.__l_mat, other.__l_mat)), np.hstack((self.__r_vec, other.__r_vec)))
         res.remove_redundant_term()
 
         return res
 
-    def __eq__(self, other: 'Polyhedron') -> bool:
+    def __eq__(self, other: "Polyhedron") -> bool:
         return self.subset_eq(other) and other.subset_eq(self)
 
     def get_max_ellipsoid(self, p: np.ndarray, center: np.ndarray = None) -> Ellipsoid:
@@ -310,18 +326,18 @@ class Polyhedron(SetBase):
         l_mat_bar = self.__l_mat @ npl.inv(p_bar).T
         min_center_to_edge_distance = np.min(np.abs(r_vec_bar) / npl.norm(l_mat_bar, ord=2, axis=1))
 
-        return Ellipsoid(p, min_center_to_edge_distance ** 2, center)
+        return Ellipsoid(p, min_center_to_edge_distance**2, center)
 
 
 def rn(dim: int):
     return Polyhedron(np.zeros((1, dim)), np.zeros(1))
 
 
-def unit_cube(dim: int, side_length: int or float):
+def unit_cube(dim: int, side_length: Union[int, float]):
     if dim <= 0:
-        raise SetTypeException('dimension', 'unit cube', 'positive integer')
+        raise SetTypeException("dimension", "unit cube", "positive integer")
     if side_length < 0:
-        raise SetTypeException('side length', 'unit cube', 'non-negative real number')
+        raise SetTypeException("side length", "unit cube", "non-negative real number")
 
     eye = np.eye(dim)
 

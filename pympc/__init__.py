@@ -1,3 +1,3 @@
-__all__ = ['mpc', 'set']
+__all__ = ["mpc", "set"]
 
 from . import *

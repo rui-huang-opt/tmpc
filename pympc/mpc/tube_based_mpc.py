@@ -7,13 +7,23 @@ from .exception import *
 
 
 class TubeBasedMPC(MPCBase):
-    def __init__(self, a: np.ndarray, b: np.ndarray, q: np.ndarray, r: np.ndarray, pred_horizon: int,
-                 state_set: Polyhedron, input_set: Polyhedron, noise_set: Polyhedron,
-                 terminal_set_type='polyhedron', solver=cp.PIQP):
+    def __init__(
+        self,
+        a: np.ndarray,
+        b: np.ndarray,
+        q: np.ndarray,
+        r: np.ndarray,
+        pred_horizon: int,
+        state_set: Polyhedron,
+        input_set: Polyhedron,
+        noise_set: Polyhedron,
+        terminal_set_type="polyhedron",
+        solver=cp.PIQP,
+    ):
         super().__init__(a, b, q, r, pred_horizon, terminal_set_type, solver)
 
         if not (self.state_dim == noise_set.n_dim):
-            raise MPCDimensionException('noise set and state in controller!')
+            raise MPCDimensionException("noise set and state in controller!")
 
         self.__noise_set = noise_set
 
@@ -69,8 +79,12 @@ class TubeBasedMPC(MPCBase):
 
             sum_a_k_s_noise_set = sum_a_k_s_noise_set + a_k_s_noise_set
 
-        alp = max([support_fun(self.__noise_set.l_mat[i, :], a_k_s_noise_set) / a_k_s_noise_set.r_vec[i]
-                   for i in range(self.__noise_set.n_edges)])
+        alp = max(
+            [
+                support_fun(self.__noise_set.l_mat[i, :], a_k_s_noise_set) / a_k_s_noise_set.r_vec[i]
+                for i in range(self.__noise_set.n_edges)
+            ]
+        )
 
         f_alpha_s_set = sum_a_k_s_noise_set / (1 - alp)
 
