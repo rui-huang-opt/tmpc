@@ -14,7 +14,7 @@ Additionally, comparative cases incorporating LQR (Linear Quadratic Regulator) a
 ### 1. Clone the Repository
 Clone the project to your local machine:
 ```bash
-git clone https://github.com/rui-huang-opt/TMPC.git
+git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
 ```
 
 ### 2. Create and Activate Virtual Environment (Optional but Recommended)
@@ -30,7 +30,7 @@ python -m venv .venv
 
 ### 3. Install Package with Dependencies
 ```bash
-cd TMPC
+cd Rigid_Tube_MPC
 
 # Install the package and its dependencies (automatically resolved from pyproject.toml).
 pip install .
@@ -46,7 +46,7 @@ pip install .
 ### 1. 克隆仓库
 将仓库克隆到本地:
 ```bash
-git clone https://github.com/rui-huang-opt/TMPC.git
+git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
 ```
 
 ### 2. 创建虚拟环境 (非必须但是推荐这样做)
@@ -62,7 +62,7 @@ python -m venv .venv
 
 ### 3. 安装包（以及依赖）
 ```bash
-cd TMPC
+cd Rigid_Tube_MPC
 
 # 安装包及其依赖（自动从 pyproject.toml 读取）
 pip install .
