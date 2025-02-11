@@ -57,7 +57,9 @@ if __name__ == "__main__":
 
         u_t_mpc[:, k] = t_mpc(x_t_mpc[:, k])  # 实际输出
         u_nom_t_mpc[:, k] = t_mpc.input_ini.value  # 名义输出
-        u_noise_t_mpc[:, k] = -t_mpc.k @ (x_t_mpc[:, k] - t_mpc.state_ini.value)  # 用于抑制噪声的输出
+        u_noise_t_mpc[:, k] = -t_mpc.k @ (
+            x_t_mpc[:, k] - t_mpc.state_ini.value
+        )  # 用于抑制噪声的输出
         x_t_mpc[:, k + 1] = A @ x_t_mpc[:, k] + B @ u_t_mpc[:, k] + w
 
         x_t_mpc_pred[k] = t_mpc.state_prediction_series
@@ -84,15 +86,28 @@ if __name__ == "__main__":
     terminal_set_plus_di.plot(ax1, color="k")
     x_set.plot(ax1, color="k")
 
-    ax1.annotate("State bound", xy=(-6, 2), xytext=(-6, 2.5), arrowprops=dict(arrowstyle="-|>"))
-    ax1.annotate("Terminal set", xy=(1.1, -0.3), xytext=(1.1, 0.5), arrowprops=dict(arrowstyle="-|>"))
     ax1.annotate(
-        "Terminal set + Disturbance invariant set", xy=(0.5, -0.9), xytext=(-4, -2.5), arrowprops=dict(arrowstyle="-|>")
+        "State bound", xy=(-6, 2), xytext=(-6, 2.5), arrowprops=dict(arrowstyle="-|>")
+    )
+    ax1.annotate(
+        "Terminal set",
+        xy=(1.1, -0.3),
+        xytext=(1.1, 0.5),
+        arrowprops=dict(arrowstyle="-|>"),
+    )
+    ax1.annotate(
+        "Terminal set + Disturbance invariant set",
+        xy=(0.5, -0.9),
+        xytext=(-4, -2.5),
+        arrowprops=dict(arrowstyle="-|>"),
     )
 
     tube_text_pos = x_t_mpc_pred[3, :, 0] + np.array([0.25, -0.25])
     ax1.annotate(
-        "Tube", xy=tube_text_pos, xytext=tube_text_pos - 0.2 * tube_text_pos, arrowprops=dict(arrowstyle="-|>")
+        "Tube",
+        xy=tube_text_pos,
+        xytext=tube_text_pos - 0.2 * tube_text_pos,
+        arrowprops=dict(arrowstyle="-|>"),
     )
 
     for k in range(T):
@@ -102,7 +117,13 @@ if __name__ == "__main__":
     for k in range(T):
         l, u = (0, 1) if k == 0 else (k - 1, k + 1)
 
-        (line_1,) = ax1.plot(x_t_mpc[0, l:u], x_t_mpc[1, l:u], color="b", marker="*", label="MPC real trajectory")
+        (line_1,) = ax1.plot(
+            x_t_mpc[0, l:u],
+            x_t_mpc[1, l:u],
+            color="b",
+            marker="*",
+            label="MPC real trajectory",
+        )
         (line_2,) = ax1.plot(
             x_t_mpc_pred[l:u, 0, 0].reshape(-1),
             x_t_mpc_pred[l:u, 1, 0].reshape(-1),
@@ -111,7 +132,11 @@ if __name__ == "__main__":
             label="MPC nominal trajectory",
         )
         (line_3,) = ax1.plot(
-            x_t_mpc_pred[k][0, :], x_t_mpc_pred[k][1, :], color="r", marker="^", label="MPC predicted trajectory"
+            x_t_mpc_pred[k][0, :],
+            x_t_mpc_pred[k][1, :],
+            color="r",
+            marker="^",
+            label="MPC predicted trajectory",
         )
 
         if k == 0:
@@ -141,7 +166,9 @@ if __name__ == "__main__":
 
     ax2[1].legend(loc="upper right")
 
-    ax2[2].step(iterations, u_noise_t_mpc[0, :], label="Input sequence for noise reduction")
+    ax2[2].step(
+        iterations, u_noise_t_mpc[0, :], label="Input sequence for noise reduction"
+    )
     ax2[2].step(iterations, np.ones(T) * 1, "y--", label="Input bounds")
     ax2[2].step(iterations, np.ones(T) * -1, "y--")
 
@@ -152,14 +179,24 @@ if __name__ == "__main__":
     ax3.set_title("Feasible set for the initial state of tube based MPC")
     ax3.grid(True)
 
-    ax3.annotate("Initial state", xy=x_ini, xytext=x_ini + 0.3 * np.abs(x_ini), arrowprops=dict(arrowstyle="-|>"))
+    ax3.annotate(
+        "Initial state",
+        xy=x_ini,
+        xytext=x_ini + 0.3 * np.abs(x_ini),
+        arrowprops=dict(arrowstyle="-|>"),
+    )
     ax3.annotate(
         "Feasible set for initial state\nin controller",
         xy=(10, -4),
         xytext=(-20, -6),
         arrowprops=dict(arrowstyle="-|>"),
     )
-    ax3.annotate("Feasible set for initial state", xy=(20, -5.8), xytext=(0, -8), arrowprops=dict(arrowstyle="-|>"))
+    ax3.annotate(
+        "Feasible set for initial state",
+        xy=(20, -5.8),
+        xytext=(0, -8),
+        arrowprops=dict(arrowstyle="-|>"),
+    )
     feasible_set_bar.plot(ax3, color="r")
     feasible_set.plot(ax3, color="b")
 
@@ -176,7 +213,13 @@ if __name__ == "__main__":
 
     for k in range(T_test):
         l, u = (0, 1) if k == 0 else (k - 1, k + 1)
-        ax4.plot(x_test[0, l:u], x_test[1, l:u], color="r", marker="*", label="Test state trajectory")
+        ax4.plot(
+            x_test[0, l:u],
+            x_test[1, l:u],
+            color="r",
+            marker="*",
+            label="Test state trajectory",
+        )
 
         if k == 0:
             pass

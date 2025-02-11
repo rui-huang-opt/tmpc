@@ -25,7 +25,9 @@ if __name__ == "__main__":
     u_set = ts.Polyhedron(A_u, b_u)
 
     mpc_poly = tm.MPC(A, B, Q, R, N, x_set, u_set, terminal_set_type="polyhedron")
-    mpc_elli = tm.MPC(A, B, Q, R, N, x_set, u_set, terminal_set_type="ellipsoid", solver=cp.ECOS)
+    mpc_elli = tm.MPC(
+        A, B, Q, R, N, x_set, u_set, terminal_set_type="ellipsoid", solver=cp.ECOS
+    )
 
     poly_terminal_set = mpc_poly.terminal_set
     elli_terminal_set = mpc_elli.terminal_set
@@ -68,9 +70,21 @@ if __name__ == "__main__":
     ax1.set_xlim([-5, 25])
     ax1.set_ylim([-10, 5])
     ax1.set_title("State trajectories")
-    ax1.annotate("State bound", xy=(2.5, 2), xytext=(2.5, 3), arrowprops=dict(arrowstyle="-|>"))
-    ax1.annotate("Polyhedron terminal set", xy=(2, -1.2), xytext=(5, -2), arrowprops=dict(arrowstyle="-|>"))
-    ax1.annotate("Ellipsoid terminal set", xy=(0.2, -0.4), xytext=(5, 0), arrowprops=dict(arrowstyle="-|>"))
+    ax1.annotate(
+        "State bound", xy=(2.5, 2), xytext=(2.5, 3), arrowprops=dict(arrowstyle="-|>")
+    )
+    ax1.annotate(
+        "Polyhedron terminal set",
+        xy=(2, -1.2),
+        xytext=(5, -2),
+        arrowprops=dict(arrowstyle="-|>"),
+    )
+    ax1.annotate(
+        "Ellipsoid terminal set",
+        xy=(0.2, -0.4),
+        xytext=(5, 0),
+        arrowprops=dict(arrowstyle="-|>"),
+    )
 
     poly_terminal_set.plot(ax1, color="k")
     elli_terminal_set.plot(ax1, color="k")
@@ -80,17 +94,33 @@ if __name__ == "__main__":
         l, u = (0, 1) if k == 0 else (k - 1, k + 1)
 
         (line_1,) = ax1.plot(
-            x_mpc_poly[0, l:u], x_mpc_poly[1, l:u], color="b", marker="*", label="Poly real trajectory"
+            x_mpc_poly[0, l:u],
+            x_mpc_poly[1, l:u],
+            color="b",
+            marker="*",
+            label="Poly real trajectory",
         )
         (line_2,) = ax1.plot(
-            x_mpc_poly_pred[k][0, :], x_mpc_poly_pred[k][1, :], color="r", marker="^", label="Poly predicted trajectory"
+            x_mpc_poly_pred[k][0, :],
+            x_mpc_poly_pred[k][1, :],
+            color="r",
+            marker="^",
+            label="Poly predicted trajectory",
         )
 
         (line_3,) = ax1.plot(
-            x_mpc_elli[0, l:u], x_mpc_elli[1, l:u], color="g", marker="x", label="Elli real trajectory"
+            x_mpc_elli[0, l:u],
+            x_mpc_elli[1, l:u],
+            color="g",
+            marker="x",
+            label="Elli real trajectory",
         )
         (line_4,) = ax1.plot(
-            x_mpc_elli_pred[k][0, :], x_mpc_elli_pred[k][1, :], color="y", marker="o", label="Elli predicted trajectory"
+            x_mpc_elli_pred[k][0, :],
+            x_mpc_elli_pred[k][1, :],
+            color="y",
+            marker="o",
+            label="Elli predicted trajectory",
         )
 
         if k == 0:

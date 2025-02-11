@@ -9,7 +9,9 @@ if __name__ == "__main__":
     ax1.axis("equal")
     ax1.set_title("Translation")
 
-    p1 = ts.Polyhedron(np.array([[1, 0], [-1, 0], [0, 1], [0, -1]]), np.array([1, 0, 1, 0]))
+    p1 = ts.Polyhedron(
+        np.array([[1, 0], [-1, 0], [0, 1], [0, -1]]), np.array([1, 0, 1, 0])
+    )
     p2 = ts.Polyhedron(np.array([[-3, 1], [-1, -1], [1, 0]]), np.array([3, 1, 0]))
     p3 = p1 + np.array([0, 2])
 

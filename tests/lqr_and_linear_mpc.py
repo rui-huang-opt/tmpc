@@ -75,8 +75,12 @@ if __name__ == "__main__":
     ax1.set_xlim([-10, 25])
     ax1.set_ylim([-10, 5])
     ax1.set_title("State trajectories of LQR and MPC")
-    ax1.annotate("State bound", xy=(2.5, 2), xytext=(2.5, 3), arrowprops=dict(arrowstyle="-|>"))
-    ax1.annotate("Terminal set", xy=(1, -0.5), xytext=(5, -2), arrowprops=dict(arrowstyle="-|>"))
+    ax1.annotate(
+        "State bound", xy=(2.5, 2), xytext=(2.5, 3), arrowprops=dict(arrowstyle="-|>")
+    )
+    ax1.annotate(
+        "Terminal set", xy=(1, -0.5), xytext=(5, -2), arrowprops=dict(arrowstyle="-|>")
+    )
 
     terminal_set.plot(ax1, color="k")
     x_set.plot(ax1, color="k")
@@ -84,11 +88,27 @@ if __name__ == "__main__":
     for k in range(T):
         l, u = (0, 1) if k == 0 else (k - 1, k + 1)
 
-        (line_1,) = ax1.plot(x_lqr[0, l:u], x_lqr[1, l:u], color="g", marker="o", label="LQR real trajectory")
+        (line_1,) = ax1.plot(
+            x_lqr[0, l:u],
+            x_lqr[1, l:u],
+            color="g",
+            marker="o",
+            label="LQR real trajectory",
+        )
 
-        (line_2,) = ax1.plot(x_mpc[0, l:u], x_mpc[1, l:u], color="b", marker="*", label="MPC real trajectory")
+        (line_2,) = ax1.plot(
+            x_mpc[0, l:u],
+            x_mpc[1, l:u],
+            color="b",
+            marker="*",
+            label="MPC real trajectory",
+        )
         (line_3,) = ax1.plot(
-            x_mpc_pred[k][0, :], x_mpc_pred[k][1, :], color="r", marker="^", label="MPC predicted trajectory"
+            x_mpc_pred[k][0, :],
+            x_mpc_pred[k][1, :],
+            color="r",
+            marker="^",
+            label="MPC predicted trajectory",
         )
 
         if k == 0:
@@ -128,7 +148,12 @@ if __name__ == "__main__":
     ax3.set_title("The feasible set of the initial state of MPC")
 
     ax3.plot(x_ini[0], x_ini[1], color="r", marker="*")
-    ax3.annotate("Initial state", xy=x_ini, xytext=x_ini + 0.3 * np.abs(x_ini), arrowprops=dict(arrowstyle="-|>"))
+    ax3.annotate(
+        "Initial state",
+        xy=x_ini,
+        xytext=x_ini + 0.3 * np.abs(x_ini),
+        arrowprops=dict(arrowstyle="-|>"),
+    )
     feasible_set.plot(ax3)
 
     plt.show()

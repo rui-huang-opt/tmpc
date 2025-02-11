@@ -5,7 +5,7 @@
 ---
 
 <a id="english-readme"></a>
-# tube-mpc
+# Rigid-tube MPC
 Reproduction of the Simulation Section from the Paper
 [D. Q. Mayne, M. M. Seron, and S. V. Raković, "Robust Model Predictive Control of Constrained Linear Systems with Bounded Disturbances," Automatica, vol. 41, no. 2, pp. 219–224, 2005.](https://www.sciencedirect.com/science/article/pii/S0005109804002870)
 Additionally, comparative cases incorporating LQR (Linear Quadratic Regulator) and Linear MPC (Model Predictive Control) have been included.
@@ -39,7 +39,7 @@ pip install .
 ---
 
 <a id="中文文档"></a>
-# tube-mpc
+# Rigid-tube MPC
 关于论文[D. Q. Mayne, M. M. Seron, and S. V. Raković, “Robust model predictive control of constrained linear systems with bounded disturbances,” Automatica, vol. 41, no. 2, pp. 219–224, 2005.](https://www.sciencedirect.com/science/article/pii/S0005109804002870)中仿真部分的复现。此外，还加入了LQR和线性MPC的对比案例。
 
 ## 安装
