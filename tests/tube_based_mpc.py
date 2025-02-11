@@ -1,12 +1,7 @@
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
 import numpy as np
 import matplotlib.pyplot as plt
-import pympc.set as ms
-import pympc.mpc as mm
+import tmpc.set as ts
+import tmpc.mpc as tm
 
 if __name__ == "__main__":
     # Tube based MPC = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -27,12 +22,12 @@ if __name__ == "__main__":
     A_w = np.array([[1, 0], [-1, 0], [0, 1], [0, -1]])
     b_w = np.array([0.1, 0.1, 0.1, 0.1])
 
-    x_set = ms.Polyhedron(A_x, b_x)
-    u_set = ms.Polyhedron(A_u, b_u)
-    w_set = ms.Polyhedron(A_w, b_w)
+    x_set = ts.Polyhedron(A_x, b_x)
+    u_set = ts.Polyhedron(A_u, b_u)
+    w_set = ts.Polyhedron(A_w, b_w)
 
     # 各种集合的计算量较大，可能会花费较长时间
-    t_mpc = mm.TubeBasedMPC(A, B, Q, R, N, x_set, u_set, w_set)
+    t_mpc = tm.TubeBasedMPC(A, B, Q, R, N, x_set, u_set, w_set)
 
     disturbance_invariant_set = t_mpc.disturbance_invariant_set
     terminal_set = t_mpc.terminal_set

@@ -1,13 +1,8 @@
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
 import numpy as np
 import cvxpy as cp
 import matplotlib.pyplot as plt
-import pympc.set as ms
-import pympc.mpc as mm
+import tmpc.set as ts
+import tmpc.mpc as tm
 
 if __name__ == "__main__":
     # Comparison of LQR, linear MPC = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -26,11 +21,11 @@ if __name__ == "__main__":
     A_u = np.array([[1], [-1]])
     b_u = np.array([1, 1])
 
-    x_set = ms.Polyhedron(A_x, b_x)
-    u_set = ms.Polyhedron(A_u, b_u)
+    x_set = ts.Polyhedron(A_x, b_x)
+    u_set = ts.Polyhedron(A_u, b_u)
 
-    mpc_poly = mm.MPC(A, B, Q, R, N, x_set, u_set, terminal_set_type="polyhedron")
-    mpc_elli = mm.MPC(A, B, Q, R, N, x_set, u_set, terminal_set_type="ellipsoid", solver=cp.ECOS)
+    mpc_poly = tm.MPC(A, B, Q, R, N, x_set, u_set, terminal_set_type="polyhedron")
+    mpc_elli = tm.MPC(A, B, Q, R, N, x_set, u_set, terminal_set_type="ellipsoid", solver=cp.ECOS)
 
     poly_terminal_set = mpc_poly.terminal_set
     elli_terminal_set = mpc_elli.terminal_set

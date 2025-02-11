@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import tmpc.set as ms
-import tmpc.mpc as mm
+import tmpc.set as ts
+import tmpc.mpc as tm
 
 if __name__ == "__main__":
     # Comparison of LQR, linear MPC = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -20,11 +20,11 @@ if __name__ == "__main__":
     A_u = np.array([[1], [-1]])
     b_u = np.array([1, 1])
 
-    x_set = ms.Polyhedron(A_x, b_x)
-    u_set = ms.Polyhedron(A_u, b_u)
+    x_set = ts.Polyhedron(A_x, b_x)
+    u_set = ts.Polyhedron(A_u, b_u)
 
-    lqr = mm.LQR(A, B, Q, R)
-    mpc = mm.MPC(A, B, Q, R, N, x_set, u_set)
+    lqr = tm.LQR(A, B, Q, R)
+    mpc = tm.MPC(A, B, Q, R, N, x_set, u_set)
 
     terminal_set = mpc.terminal_set
     feasible_set = mpc.feasible_set
