@@ -42,7 +42,7 @@ pip install .
 # tube-mpc
 关于论文[D. Q. Mayne, M. M. Seron, and S. V. Raković, “Robust model predictive control of constrained linear systems with bounded disturbances,” Automatica, vol. 41, no. 2, pp. 219–224, 2005.](https://www.sciencedirect.com/science/article/pii/S0005109804002870)中仿真部分的复现。此外，还加入了LQR和线性MPC的对比案例。
 
-## Installation
+## 安装
 ### 1. 克隆仓库
 将仓库克隆到本地:
 ```bash
