@@ -11,13 +11,7 @@ Reproduction of the Simulation Section from the Paper
 Additionally, comparative cases incorporating LQR (Linear Quadratic Regulator) and Linear MPC (Model Predictive Control) have been included.
 
 ## Installation
-### 1. Clone the Repository
-Clone the project to your local machine:
-```bash
-git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
-```
-
-### 2. Create and Activate Virtual Environment (Optional but Recommended)
+### 1. Create and Activate Virtual Environment (Optional but Recommended)
 ```bash
 # For Linux/macOS
 python -m venv .venv
@@ -28,8 +22,15 @@ python -m venv .venv
 .\.venv\Scripts\activate
 ```
 
-### 3. Install Package with Dependencies
+### 2. Install Package with Dependencies
+#### Method 1: Install directly from GitHub (Recommended)
 ```bash
+pip install git+https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
+```
+
+#### Method 2: Clone repository and install
+```bash
+git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
 cd Rigid_Tube_MPC
 
 # Install the package and its dependencies (automatically resolved from pyproject.toml).
@@ -43,13 +44,7 @@ pip install .
 关于论文[D. Q. Mayne, M. M. Seron, and S. V. Raković, “Robust model predictive control of constrained linear systems with bounded disturbances,” Automatica, vol. 41, no. 2, pp. 219–224, 2005.](https://www.sciencedirect.com/science/article/pii/S0005109804002870)中仿真部分的复现。此外，还加入了LQR和线性MPC的对比案例。
 
 ## 安装
-### 1. 克隆仓库
-将仓库克隆到本地:
-```bash
-git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
-```
-
-### 2. 创建虚拟环境 (非必须但是推荐这样做)
+### 1. 创建虚拟环境 (非必须但是推荐这样做)
 ```bash
 # Linux/macOS 系统
 python -m venv .venv
@@ -60,8 +55,15 @@ python -m venv .venv
 .\.venv\Scripts\activate
 ```
 
-### 3. 安装包（以及依赖）
+### 2. 安装包（以及依赖）
+#### 方法1：直接从 GitHub 安装（推荐）
 ```bash
+pip install git+https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
+```
+
+#### 方法2：克隆仓库后安装
+```bash
+git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
 cd Rigid_Tube_MPC
 
 # 安装包及其依赖（自动从 pyproject.toml 读取）
