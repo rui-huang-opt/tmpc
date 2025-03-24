@@ -25,12 +25,12 @@ python -m venv .venv
 ### 2. Install Package with Dependencies
 #### Method 1: Install directly from GitHub (Recommended)
 ```bash
-pip install git+https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
+pip install git+https://github.com/rui-huang-opt/tmpc.git
 ```
 
 #### Method 2: Clone repository and install
 ```bash
-git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
+git clone https://github.com/rui-huang-opt/tmpc.git
 cd Rigid_Tube_MPC
 
 # Install the package and its dependencies (automatically resolved from pyproject.toml).
@@ -58,12 +58,12 @@ python -m venv .venv
 ### 2. 安装包（以及依赖）
 #### 方法1：直接从 GitHub 安装（推荐）
 ```bash
-pip install git+https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
+pip install git+https://github.com/rui-huang-opt/tmpc.git
 ```
 
 #### 方法2：克隆仓库后安装
 ```bash
-git clone https://github.com/rui-huang-opt/Rigid_Tube_MPC.git
+git clone https://github.com/rui-huang-opt/tmpc.git
 cd Rigid_Tube_MPC
 
 # 安装包及其依赖（自动从 pyproject.toml 读取）
