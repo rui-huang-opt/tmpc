@@ -31,7 +31,7 @@ pip install git+https://github.com/rui-huang-opt/tmpc.git
 #### Method 2: Clone repository and install
 ```bash
 git clone https://github.com/rui-huang-opt/tmpc.git
-cd Rigid_Tube_MPC
+cd tmpc
 
 # Install the package and its dependencies (automatically resolved from pyproject.toml).
 pip install .
@@ -64,7 +64,7 @@ pip install git+https://github.com/rui-huang-opt/tmpc.git
 #### 方法2：克隆仓库后安装
 ```bash
 git clone https://github.com/rui-huang-opt/tmpc.git
-cd Rigid_Tube_MPC
+cd tmpc
 
 # 安装包及其依赖（自动从 pyproject.toml 读取）
 pip install .
